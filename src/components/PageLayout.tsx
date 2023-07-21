@@ -1,14 +1,25 @@
 import { Container, Stack } from "@mui/material";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 export const PageLayout = ({ children }: { children: ReactNode }) => {
+  useEffect(() => {
+    const setScreenSize = () => {
+      document.documentElement.style.setProperty(
+        "--vh",
+        `${window.innerHeight * 0.01}px`
+      );
+    };
+    setScreenSize();
+    window.addEventListener("resize", setScreenSize);
+
+    return () => window.removeEventListener("resize", setScreenSize);
+  }, []);
   return (
     <Stack
       className="App"
       justifyContent="center"
       height="calc(var(--vh, 1vh) * 100)"
       sx={{
-        bgcolor: "#004268",
         ".fade-enter": {
           opacity: 0,
         },

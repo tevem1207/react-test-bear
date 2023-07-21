@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, GlobalStyles, Typography } from "@mui/material";
 import { ReactComponent as PolarBearSVG } from "./assets/polar-bear.svg";
 import { PageLayout } from "./components";
 import { Routes, Route, useLocation } from "react-router";
@@ -33,6 +33,9 @@ function App() {
         fontWeight={700}
         color={"white"}
         onClick={() => navigate("/")}
+        sx={{
+          animation: "700ms ease fade",
+        }}
       >
         고재민입니다~
       </Typography>
@@ -45,7 +48,10 @@ function App() {
         variant="h3"
         fontWeight={700}
         color={"white"}
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/view")}
+        sx={{
+          animation: "700ms ease fade",
+        }}
       >
         곰인데요~
       </Typography>
@@ -54,11 +60,16 @@ function App() {
 
   return (
     <>
+      <GlobalStyles styles={{ body: { margin: 0 } }} />
       <PageLayout>
         <Box
           sx={{
-            backgroundColor: "rgba(0, 0, 0, 0.25)",
+            backgroundColor: "rgba(0, 0, 0, 0.2)",
             marginTop: 2,
+            "@keyframes fade": {
+              from: { opacity: 0 },
+              to: { opacity: 1 },
+            },
           }}
         >
           <Routes>
