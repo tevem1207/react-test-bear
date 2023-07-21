@@ -1,8 +1,15 @@
-import { Box, GlobalStyles, Typography } from "@mui/material";
+import { Box, GlobalStyles, ThemeProvider, createTheme } from "@mui/material";
 import { ReactComponent as PolarBearSVG } from "./assets/polar-bear.svg";
-import { PageLayout } from "./components";
+import { Input, PageLayout, Speak, Speaks } from "./components";
 import { Routes, Route, useLocation } from "react-router";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+const theme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
 
 function App() {
   const navigate = useNavigate();
@@ -10,6 +17,21 @@ function App() {
 
   const switchRoute = () => {
     navigate(location.pathname === "/" ? "/view" : "/");
+  };
+
+  const addMemo = (content: string) => {
+    console.log(content);
+    axios
+      .post("http://13.125.255.21:80/memo/", content)
+      .then(() => navigate("/view"))
+      .catch((err) => console.log(err));
+  };
+
+  const deleteMemo = (id: number) => {
+    axios
+      .delete(`http://13.125.255.21:80/memo/${id}`)
+      .then(() => navigate("/view"))
+      .catch((err) => console.log(err));
   };
 
   const PolarBear = () => {
@@ -26,60 +48,44 @@ function App() {
     );
   };
 
-  const Jamin = () => {
-    return (
-      <Typography
-        variant="h3"
-        fontWeight={700}
-        color={"white"}
-        onClick={() => navigate("/")}
-        sx={{
-          animation: "700ms ease fade",
-        }}
-      >
-        고재민입니다~
-      </Typography>
-    );
-  };
-
-  const Bear = () => {
-    return (
-      <Typography
-        variant="h3"
-        fontWeight={700}
-        color={"white"}
-        onClick={() => navigate("/view")}
-        sx={{
-          animation: "700ms ease fade",
-        }}
-      >
-        곰인데요~
-      </Typography>
-    );
-  };
-
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <GlobalStyles styles={{ body: { margin: 0 } }} />
       <PageLayout>
         <Box
           sx={{
-            backgroundColor: "rgba(0, 0, 0, 0.2)",
+            height: "300px",
+            overflow: "auto",
             marginTop: 2,
             "@keyframes fade": {
-              from: { opacity: 0 },
+              from: { transform: "scale(0.8)", opacity: 0 },
               to: { opacity: 1 },
             },
           }}
         >
-          <Routes>
-            <Route path="/" element={<Bear />} />
-            <Route path="/view" element={<Jamin />} />
-          </Routes>
+          <Box
+            sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
+          >
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Speak fontWeight={700} callBack={() => navigate("/view")}>
+                    고재민입니다~
+                  </Speak>
+                }
+              />
+              <Route
+                path="/view"
+                element={<Speaks deleteMemo={deleteMemo} />}
+              />
+            </Routes>
+          </Box>
         </Box>
         <PolarBear />
+        <Input addMemo={addMemo} />
       </PageLayout>
-    </>
+    </ThemeProvider>
   );
 }
 
